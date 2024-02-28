@@ -2,7 +2,7 @@ terraform {
   required_providers {
     google = {
       source = "hashicorp/google"
-      version = "4.51.0"
+      version = "5.18.0"
     }
   }
 }
@@ -16,12 +16,20 @@ provider "google" {
 }
 
 resource "google_container_cluster" "primary" {
-  name     = "${var.project_id}-gke"
+  name     = "triton"
   location = var.region
 
   release_channel {
     channel = "RAPID"
   }
+
+  addons_config {
+    http_load_balancing {
+      disabled = false
+    }
+  }
+
+  allow_net_admin = true
 
   min_master_version = "1.28"
 
