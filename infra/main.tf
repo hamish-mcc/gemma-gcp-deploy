@@ -34,6 +34,8 @@ resource "google_container_cluster" "primary" {
   min_master_version = "1.28"
 
   enable_autopilot = true
+
+  deletion_protection = false
 }
 
 
