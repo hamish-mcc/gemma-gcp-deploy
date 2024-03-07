@@ -50,7 +50,7 @@ kubectl -n triton apply -f trtllm_checkpoint_pv.yaml
 # Download the TensorRT-LLM engine files for Gemma
 kubectl -n triton apply -f job-download-gemma-7b.yaml
 
-kubectl -n triton wait --for=condition=complete --timeout=900s job/data-loader-gemma-7b
+kubectl -n triton wait --for=condition=complete --timeout=1500s job/data-loader-gemma-7b
 
 kubectl -n triton get job/data-loader-gemma-7b # Verify job is complete
 

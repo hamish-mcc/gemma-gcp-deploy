@@ -17,25 +17,44 @@ provider "google" {
 
 resource "google_container_cluster" "primary" {
   name     = "triton"
-  location = var.region
+  project = var.project_id
+  location = var.zone
+
+  initial_node_count = 1
+
+  workload_identity_config {
+    workload_pool = "${var.project_id}.svc.id.goog"
+  }
 
   release_channel {
     channel = "RAPID"
   }
 
-  addons_config {
-    http_load_balancing {
-      disabled = false
-    }
+  node_config {
+    machine_type = "e2-standard-4"
   }
-
-  allow_net_admin = true
-
-  min_master_version = "1.28"
-
-  enable_autopilot = true
 
   deletion_protection = false
 }
 
+resource "google_container_node_pool" "primary_preemptible_nodes" {
+  name = "gpupool"
+  project = var.project_id
+  location = var.zone
+  cluster    = google_container_cluster.primary.id
+
+  node_count = 1
+
+  node_config {
+    machine_type = "g2-standard-12"
+
+    guest_accelerator {
+      type = "nvidia-l4"
+      count = 1
+      gpu_driver_installation_config {
+        gpu_driver_version = "LATEST"
+      }
+    }
+  }
+}
 
