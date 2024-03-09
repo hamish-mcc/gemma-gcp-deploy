@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     google = {
-      source = "hashicorp/google"
+      source  = "hashicorp/google"
       version = "5.18.0"
     }
   }
@@ -16,9 +16,9 @@ provider "google" {
 }
 
 resource "google_container_cluster" "primary" {
-  name     = "triton"
-  project = var.project_id
-  location = var.zone
+  name      = "triton"
+  project   = var.project_id
+  location  = var.zone
 
   initial_node_count = 1
 
@@ -38,10 +38,10 @@ resource "google_container_cluster" "primary" {
 }
 
 resource "google_container_node_pool" "primary_preemptible_nodes" {
-  name = "gpupool"
-  project = var.project_id
-  location = var.zone
-  cluster    = google_container_cluster.primary.id
+  name      = "gpupool"
+  project   = var.project_id
+  location  = var.zone
+  cluster   = google_container_cluster.primary.id
 
   node_count = 1
 
@@ -49,7 +49,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
     machine_type = "g2-standard-12"
 
     guest_accelerator {
-      type = "nvidia-l4"
+      type  = "nvidia-l4"
       count = 1
       gpu_driver_installation_config {
         gpu_driver_version = "LATEST"

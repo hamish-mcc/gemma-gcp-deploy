@@ -2,6 +2,7 @@
 
 Google Cloud [Serve Gemma open models using GPUs on GKE with Triton and TensorRT-LLM ](https://cloud.google.com/kubernetes-engine/docs/tutorials/serve-gemma-gpu-tensortllm)
 
+
 ## Setup
 
 ### CLI Tools
@@ -62,5 +63,5 @@ kubectl -n triton wait --for=condition=Available --timeout=900s deployment/trito
 kubectl -n triton logs -f -l app=gemma-server # Verify logs
 
 # Deploy Ingress
-kubectl -n apply -f triton-server-ingress.yaml
+kubectl -n apply -f triton-ingress.yaml
 ```
