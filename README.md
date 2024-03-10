@@ -1,4 +1,4 @@
-# Deploy Serve Gemma open models using GPUs on GKE with Triton and TensorRT-LLM
+# Deploy Gemma open models using GPUs on GKE with Triton and TensorRT-LLM
 
 ## Resources
 
