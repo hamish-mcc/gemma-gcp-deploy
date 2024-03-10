@@ -1,6 +1,8 @@
+# Deploy Serve Gemma open models using GPUs on GKE with Triton and TensorRT-LLM
+
 ## Resources
 
-Google Cloud [Serve Gemma open models using GPUs on GKE with Triton and TensorRT-LLM ](https://cloud.google.com/kubernetes-engine/docs/tutorials/serve-gemma-gpu-tensortllm)
+See Google Cloud's [Serve Gemma open models using GPUs on GKE with Triton and TensorRT-LLM ](https://cloud.google.com/kubernetes-engine/docs/tutorials/serve-gemma-gpu-tensortllm)
 
 
 ## Setup
@@ -15,10 +17,31 @@ Google Cloud [Serve Gemma open models using GPUs on GKE with Triton and TensorRT
 
 ### Google Cloud
 
+[Before you begin](https://cloud.google.com/kubernetes-engine/docs/tutorials/serve-gemma-gpu-tensortllm#before-you-begin)
+
+[Prepare your environment](https://cloud.google.com/kubernetes-engine/docs/tutorials/serve-gemma-gpu-tensortllm#prepare-environment)
 
 ### Kaggle
 
+[Get access to the model](https://cloud.google.com/kubernetes-engine/docs/tutorials/serve-gemma-gpu-tensortllm#model-access)
+
 ## Deploy Infrastructure
+
+Put your Google Cloud and Kaggle credentials `.json` files in a `credentials` directory.
+
+```text
+.
+├── credentials
+│   ├── gemma-opentofu.json
+│   └── kaggle.json
+├── deploy
+│   ├── ...
+│   └── ...
+├── infra
+│   ├── ...
+│   └── ..
+└── README.md
+```
 
 Using [OpenTofu CLI](https://opentofu.org/docs/cli/commands/)
 
@@ -64,4 +87,31 @@ kubectl -n triton logs -f -l app=gemma-server # Verify logs
 
 # Deploy Ingress
 kubectl -n apply -f triton-ingress.yaml
+
+# Get the ingress IP to access the Triton server
+kubectl -n triton get ingress triton-ingress.yaml
+```
+
+## Interact with the model
+
+```bash
+USER_PROMPT="I'm new to coding. If you could only recommend one programming language to start with, what would it be and why?"
+
+curl -X POST ${INGRESS_IP}/v2/models/ensemble/generate \
+  -H "Content-Type: application/json" \
+  -d @- <<EOF
+{
+    "text_input": "<start_of_turn>user\n${USER_PROMPT}<end_of_turn>\n",
+    "temperature": 0.9,
+    "max_tokens": 128
+}
+EOF
+```
+
+## Cleanup
+
+Tear-down resources with
+
+```bash
+tofu destroy
 ```
